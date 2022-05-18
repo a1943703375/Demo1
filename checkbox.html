@@ -24,6 +24,19 @@
         <div class="box"></div>
         <div class="box"></div>
         <div class="box"></div>
+
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+
+
     </div>
     <canvas id="canvas" style="position: absolute; z-index: 1;top: 0;left: 0"></canvas>
 </body>
@@ -41,7 +54,7 @@
         height: 400px;
         display: grid;
         grid-template-columns: repeat(6,1fr);
-        grid-template-rows: repeat(3,0.15fr);
+        grid-template-rows: repeat(6,1fr);
         background-color: #ffffff;
         top: 50%;
         left: 50%;
@@ -140,49 +153,34 @@
         let start = [0,0];
         let end = [0,0];
         let targets = [];   //用于存放当前元素下角标，目的是为了找出与上一次所存放的下角标的差异，来动态的更新被选中元素
+        xIndex.forEach((value, index) => {
+            if (startMousePos.X > value) {
+                start[0] = index + 1;
+            }
+            if (x > value) {
+                end[0] = index + 1;
+            }
+        })
+        yIndex.forEach((value, index) => {
+            if (startMousePos.Y > value) {
+                start[1] = index + 1;
+            }
+            if (y > value) {
+                end[1] = index + 1;
+            }
+        })
+
         //从左上角为起点
         if (startMousePos.X < x && startMousePos.Y < y && startMousePos.X <= xIndex[xIndex.length - 1] && startMousePos.Y <= yIndex[yIndex.length - 1]) {
-            xIndex.forEach((value, index) => {
-                if (startMousePos.X > value) {
-                    start[0] = index + 1;
-                }
-                if (x > value) {
-                    end[0] = index + 1;
-                }
-            })
-            yIndex.forEach((value, index) => {
-                if (startMousePos.Y > value) {
-                    start[1] = index + 1;
-                }
-                if (y > value) {
-                    end[1] = index + 1;
-                }
-            })
             for (let i = start[0] + 1; i <= end[0]; i++) {
                 for (let j = start[1] + 1; j <= end[1]; j++) {
-                    targets.push(((j - 1) * 6 + i) - 1);
+                    targets.push(((j - 1) * 6 + i) - 1)
                 }
             }
         }
         //右上角为起点
         if (startMousePos.X > x && startMousePos.Y < y && x <= xIndex[xIndex.length - 1] && startMousePos.Y <= yIndex[yIndex.length - 1]) {
-            xIndex.forEach((value, index) => {
-                if (x > value) {
-                    start[0] = index + 1;
-                }
-                if (startMousePos.X > value) {
-                    end[0] = index + 1;
-                }
-            })
-            yIndex.forEach((value, index) => {
-                if (startMousePos.Y > value) {
-                    start[1] = index + 1;
-                }
-                if (y > value) {
-                    end[1] = index + 1;
-                }
-            })
-            for (let i = start[0] + 1; i <= end[0]; i++) {
+            for (let i = start[0]; i > end[0]; i--) {
                 for (let j = start[1] + 1; j <= end[1]; j++) {
                     targets.push(((j - 1) * 6 + i) - 1);
                 }
@@ -190,53 +188,20 @@
         }
         //左下角为起点
         if (startMousePos.X < x && startMousePos.Y > y && startMousePos.X <= xIndex[xIndex.length - 1] && startMousePos.Y >= yIndex[0]) {
-            xIndex.forEach((value, index) => {
-                if (startMousePos.X > value) {
-                    start[0] = index + 1;
-                }
-                if (x > value) {
-                    end[0] = index + 1;
-                }
-            })
-            yIndex.forEach((value, index) => {
-                if (y > value) {
-                    start[1] = index + 1;
-                }
-                if (startMousePos.Y > value) {
-                    end[1] = index + 1;
-                }
-            })
             for (let i = start[0] + 1; i <= end[0]; i++) {
-                for (let j = start[1] + 1; j <= end[1]; j++) {
+                for (let j = start[1] + 1; j > end[1]; j--) {
                     targets.push(((j - 1) * 6 + i) - 1);
                 }
             }
         }
         //右下角为起点
         if (startMousePos.X > x && startMousePos.Y > y && startMousePos.X >= xIndex[0] && startMousePos.Y >= yIndex[0]) {
-            xIndex.forEach((value, index) => {
-                if (x > value) {
-                    start[0] = index + 1;
-                }
-                if (startMousePos.X > value) {
-                    end[0] = index + 1;
-                }
-            })
-            yIndex.forEach((value, index) => {
-                if (y > value) {
-                    start[1] = index + 1;
-                }
-                if (startMousePos.Y > value) {
-                    end[1] = index + 1;
-                }
-            })
-            for (let i = start[0] + 1; i <= end[0]; i++) {
-                for (let j = start[1] + 1; j <= end[1]; j++) {
+            for (let i = start[0] ; i > end[0]; i--) {
+                for (let j = start[1]; j > end[1]; j--) {
                     targets.push(((j - 1) * 6 + i) - 1);
                 }
             }
         }
-
         changeColor(targets);
 
     }
@@ -246,22 +211,16 @@
      * @param target
      */
     function changeColor(target) {
-        for (const key in target) {
-            elTargets.findIndex((value) => {
-                console.log(value);
-            })
-        }
         //去掉未被选中的元素角标
         for (const key in elTargets) {
             if (target.findIndex(value => elTargets[key] === value) === -1) {
-                console.log(key);
                 elArray[elTargets[key]].style.backgroundColor = "";
                 elTargets.splice(Number(key),1);
             }
         }
         //将新选中的元素角标添加进elTarget
         for (const key in target) {
-            if (elTargets.findIndex(value => target[key] === value) === -1) {
+            if ((elTargets.findIndex(value => target[key] === value) === -1) && target[key] <= elArray.length - 1) {
                 elArray[target[key]].style.backgroundColor = "blue";
                 elTargets.push(target[key]);
             }
