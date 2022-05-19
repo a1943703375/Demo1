@@ -398,7 +398,7 @@
         //左下角为起点
         if (startMousePos.X < x && startMousePos.Y > y && startMousePos.X <= xIndex[xIndex.length - 1] && startMousePos.Y >= yIndex[0]) {
             for (let i = start[0] + 1; i <= end[0]; i++) {
-                for (let j = start[1] + 1; j > end[1]; j--) {
+                for (let j = start[1]; j > end[1]; j--) {
                     targets.push(((j - 1) * xIndex.length + i) - 1);
                 }
             }
